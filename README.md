@@ -30,7 +30,7 @@ A sophisticated AI-powered platform that provides intelligent task management, d
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/multi-level-agentic-systems](https://github.com/SquizAI/MLAS-6feb25.git
-cd multi-level-agentic-systems
+cd MLAS-6feb25
 ```
 
 2. Install dependencies:
