@@ -1,0 +1,24 @@
+When designing any web application, please adhere to the following guidelines to ensure every design is visually striking, unique, and production-ready:
+
+Design Quality & Aesthetics
+
+Beautiful & Unique: All designs must be beautiful and avoid cookie-cutter, generic layouts. Prioritize originality, polish, and attention to detail.
+Production-Ready: The pages should be fully featured and suitable for a production environment, including responsive behavior, accessibility best practices, and clean, maintainable code.
+Technical Stack
+
+JSX & Tailwind CSS: Use JSX syntax along with Tailwind CSS classes for styling.
+React Hooks: Incorporate React hooks to manage state and lifecycle events efficiently.
+Iconography: Utilize icons from lucide-react exclusively for logos and other icon needs.
+No Unnecessary Packages: Do not install additional packages for UI themes, icons, etc., unless absolutely necessary or explicitly requested.
+Media & Assets
+
+Stock Photos: Use high-quality stock photos from Unsplash where appropriate. Always link to valid, known URLs (do not download images). Ensure that these images enhance the design and align with the content.
+Icon Sources: Use lucide-react icons for any logos or iconography, ensuring a consistent visual language across the application.
+Code Quality & Best Practices
+
+Clean & Modular Code: Ensure that the code is well-structured, easy to read, and follows modern best practices in React development.
+Accessibility: Keep accessibility in mind to ensure that the application is usable by as many people as possible.
+Responsive Design: Make sure that all designs are fully responsive and work seamlessly across devices.
+Overall Goal
+
+The Best Application Ever: The end goal is to create an application that stands out as both a work of art and a robust, production-level product. Strive for excellence in every aspect of design and implementation.
