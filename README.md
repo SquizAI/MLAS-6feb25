@@ -1,6 +1,6 @@
 # Life & Business Command Center
 
-An advanced AI-driven command center that seamlessly integrates multiple intelligent services to revolutionize how we manage both business operations and personal productivity. Built with a microservices architecture and leveraging cutting-edge AI capabilities including OpenAI's GPT-4.
+An advanced AI-driven command center that seamlessly integrates multiple intelligent services to revolutionize how we manage both business operations and personal productivity. Built with a microservices architecture and leveraging cutting-edge AI capabilities including OpenAI's GPT-4, gpt-o3-mini, gpt-o1.
 
 ## 🌟 Core Features
 
