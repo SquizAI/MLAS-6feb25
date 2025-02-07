@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Life &amp; Business Command Center</title>
+    <style>
+      /* Global Styles with production considerations */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      header {
+        background-color: #283593;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        position: relative;
+      }
+      /* Health status and login positioned within header */
+      .healthStatus {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #ffeb3b;
+        font-weight: bold;
+      }
+      .loginSection {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+      .container {
+        display: flex;
+        height: calc(100vh - 50px);
+      }
+      nav {
+        width: 200px;
+        background-color: #f5f5f5;
+        padding: 10px;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      nav li {
+        margin: 10px 0;
+      }
+      nav li button {
+        width: 100%;
+        padding: 10px;
+        background-color: #3f51b5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      nav li button:hover {
+        background-color: #303f9f;
+      }
+      .content {
+        flex: 1;
+        padding: 10px;
+        overflow: auto;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      /* Advanced styling for the assistant widget */
+      .assistant-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius: 5px;
+        overflow: hidden;
+        font-size: 14px;
+      }
+      .assistant-header {
+        background-color: #3f51b5;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .assistant-body {
+        padding: 10px;
+        display: none; /* Initially hidden */
+        height: 200px;
+        overflow-y: auto;
+      }
+      .assistant-footer {
+        padding: 10px;
+        border-top: 1px solid #ccc;
+      }
+      .assistant-footer input {
+        width: 75%;
+        padding: 5px;
+      }
+      .assistant-footer button {
+        padding: 5px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Life &amp; Business Command Center</h1>
+      <!-- Health Status Display -->
+      <div id="healthStatus" class="healthStatus"></div>
+      <!-- Basic Login Section (Production-level implementation should use HTTPS and additional security) -->
+      <div id="loginSection" class="loginSection">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
+    </header>
+    <div class="container">
+      <nav>
+        <ul>
+          <!-- Navigation buttons map to dedicated modules -->
+          <li><button onclick="loadModule('personallife')">Personal Life</button></li>
+          <li><button onclick="loadModule('workprojects')">Work &amp; Projects</button></li>
+          <li><button onclick="loadModule('learninggrowth')">Learning &amp; Growth</button></li>
+          <li><button onclick="loadModule('insights')">Insights</button></li>
+        </ul>
+      </nav>
+      <div class="content">
+        <!-- This iframe displays the selected module (widget) -->
+        <iframe id="moduleFrame" src=""></iframe>
+      </div>
+    </div>
+  
+    <!-- Persistent AI Assistant Widget -->
+    <div class="assistant-widget" id="assistantWidget">
+      <div class="assistant-header" onclick="toggleAssistant()">Assistant</div>
+      <div class="assistant-body" id="assistantBody">
+        <div id="assistantMessages" style="height:150px; overflow-y:auto;"></div>
+      </div>
+      <div class="assistant-footer">
+        <input type="text" id="assistantInput" placeholder="Ask me anything...">
+        <button onclick="sendAssistantMessage()">Send</button>
+      </div>
+    </div>
+  
+    <script>
+      // Configuration object for dynamic endpoint management
+      const CONFIG = {
+        baseUrl: "http://localhost:8080",
+        modules: {
+          personallife: "/personallife",
+          workprojects: "/workprojects",
+          learninggrowth: "/learning",
+          insights: "/analytics"
+        },
+        authEndpoint: "/authentication/token", // Endpoint for authentication token retrieval
+      };
+  
+      const moduleMapping = {
+        personallife: CONFIG.baseUrl + CONFIG.modules.personallife,
+        workprojects: CONFIG.baseUrl + CONFIG.modules.workprojects,
+        learninggrowth: CONFIG.baseUrl + CONFIG.modules.learninggrowth,
+        insights: CONFIG.baseUrl + CONFIG.modules.insights,
+      };
+  
+      // Load a module into the iframe using dynamic configuration
+      function loadModule(moduleName) {
+        const iframe = document.getElementById('moduleFrame');
+        iframe.src = moduleMapping[moduleName] || "about:blank";
+      }
+  
+      // Global health checker calls health endpoints and displays status
+      async function checkHealth() {
+        const endpoints = ['/personallife/health', '/workprojects/health', '/learning/health', '/analytics/health'];
+        const statusDiv = document.getElementById('healthStatus');
+        let statuses = [];
+        for (const ep of endpoints) {
+          try {
+            const res = await fetch(CONFIG.baseUrl + ep, { headers: getAuthHeaders() });
+            statuses.push(res.ok ? "OK" : "Error");
+          } catch (e) {
+            statuses.push("Error");
+          }
+        }
+        statusDiv.innerText = "Service Health: " + statuses.join(", ");
+      }
+  
+      // Periodically check system health every 60 seconds
+      setInterval(checkHealth, 60000);
+  
+      // On page load: load default module, check health, and initialize WebSocket
+      window.onload = () => {
+        loadModule("personallife");
+        checkHealth();
+        initiateWebSocket();
+      };
+  
+      // Helper function to include stored authentication token in headers
+      function getAuthHeaders() {
+        const token = localStorage.getItem('authToken');
+        return token ? { 'Authorization': 'Bearer ' + token } : {};
+      }
+  
+      // Advanced login function with error handling and token storage (production should use secure cookies or storage)
+      async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        try {
+          const response = await fetch(CONFIG.baseUrl + CONFIG.authEndpoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+          });
+          if (!response.ok) throw new Error('Login failed, please check your credentials.');
+          const data = await response.json();
+          localStorage.setItem('authToken', data.access_token);
+          alert("Login successful");
+        } catch (error) {
+          console.error("Login error:", error);
+          alert("Login failed: " + error.message);
+        }
+      }
+  
+      // Setup WebSocket connection to the Agent Interaction backend for chat
+      let ws;
+      function initiateWebSocket() {
+        const socketUrl = `ws://${window.location.hostname}:8080/ws/agent`;
+        ws = new WebSocket(socketUrl);
+  
+        ws.onopen = function() {
+          console.log("WebSocket connection established");
+        };
+  
+        ws.onmessage = function(event) {
+          const messagesDiv = document.getElementById("assistantMessages");
+          const msg = document.createElement("div");
+          msg.innerText = "Assistant: " + event.data;
+          messagesDiv.appendChild(msg);
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+  
+        ws.onerror = function(error) {
+          console.error("WebSocket error:", error);
+        };
+  
+        ws.onclose = function() {
+          console.log("WebSocket connection closed");
+          // Attempt to reconnect after a delay
+          setTimeout(() => {
+            console.log("Attempting to reconnect...");
+            initiateWebSocket();
+          }, 3000);
+        };
+      }
+  
+      // Send a message through the assistant widget over WebSocket
+      function sendAssistantMessage() {
+        const input = document.getElementById("assistantInput");
+        if (input.value.trim() === "") return;
+  
+        const messagesDiv = document.getElementById("assistantMessages");
+        const userMsg = document.createElement("div");
+        userMsg.innerText = "You: " + input.value;
+        messagesDiv.appendChild(userMsg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(input.value);
+        } else {
+          alert("Assistant is temporarily unavailable. Please try again shortly.");
+        }
+        input.value = "";
+      }
+  
+      // Toggle visibility of the assistant widget
+      let assistantVisible = false;
+      function toggleAssistant() {
+        assistantVisible = !assistantVisible;
+        document.getElementById('assistantBody').style.display = assistantVisible ? 'block' : 'none';
+      }
+    </script>
+  </body>
+</html> 

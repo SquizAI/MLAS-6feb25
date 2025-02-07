@@ -1,0 +1,99 @@
+services:
+  video_analysis:
+    build:
+      context: .
+      dockerfile: services/video_analysis/Dockerfile
+    ports:
+      - "8001:8000"
+    environment:
+      - SERVICE_NAME=video_analysis
+
+  voice_workflow:
+    build:
+      context: .
+      dockerfile: services/voice_workflow/Dockerfile
+    ports:
+      - "8009:8000"
+    environment:
+      - SERVICE_NAME=voice_workflow
+
+  document_management:
+    build:
+      context: .
+      dockerfile: services/document_management/Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      - SERVICE_NAME=document_management
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: services/dashboard/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - SERVICE_NAME=dashboard
+
+  agent_interaction:
+    build:
+      context: .
+      dockerfile: services/agent_interaction/Dockerfile
+    ports:
+      - "8005:8000"
+    environment:
+      - SERVICE_NAME=agent_interaction
+
+  knowledge_graph:
+    build:
+      context: .
+      dockerfile: services/knowledge_graph/Dockerfile
+    ports:
+      - "8006:8000"
+    environment:
+      - SERVICE_NAME=knowledge_graph
+
+  task_management:
+    build:
+      context: .
+      dockerfile: services/task_management/Dockerfile
+    ports:
+      - "8007:8000"
+    environment:
+      - SERVICE_NAME=task_management
+
+  ml_emotional_processing:
+    build:
+      context: .
+      dockerfile: services/ml_emotional_processing/Dockerfile
+    ports:
+      - "8008:8000"
+    environment:
+      - SERVICE_NAME=ml_emotional_processing
+
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+    ports:
+      - "8010:8010"
+    environment:
+      - SERVICE_NAME=gateway
+
+  notification:
+    build:
+      context: .
+      dockerfile: services/notification/Dockerfile
+    ports:
+      - "8020:8020"
+    environment:
+      - SERVICE_NAME=notification
+
+  chat_history:
+    build:
+      context: .
+      dockerfile: services/chat_history/Dockerfile
+    ports:
+      - "8030:8030"
+    environment:
+      - SERVICE_NAME=chat_history

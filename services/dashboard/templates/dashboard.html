@@ -1,0 +1,52 @@
+<!-- services/dashboard/templates/dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Life &amp; Business Command Center</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #stats, #transcription {
+            margin-bottom: 30px;
+        }
+        .stat {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Life &amp; Business Command Center Dashboard</h1>
+    <div id="stats">
+        <h2>Global System Stats</h2>
+        <div class="stat">Active Agents: <span id="active_agents">{{ stats.active_agents }}</span></div>
+        <div class="stat">System Health: <span id="system_health">{{ stats.system_health }}</span></div>
+        <div class="stat">Success Rate: <span id="success_rate">{{ stats.success_rate }}</span></div>
+        <div class="stat">Knowledge Nodes: <span id="knowledge_nodes">{{ stats.knowledge_nodes }}</span></div>
+    </div>
+    <div id="transcription">
+        <h2>Live Transcription Feed</h2>
+        <p id="live_transcription">No transcription data yet.</p>
+    </div>
+    <script>
+        // Establish WebSocket connection to receive live updates.
+        const ws = new WebSocket("ws://" + location.host + "/ws/dashboard");
+        ws.onmessage = function(event) {
+            const update = JSON.parse(event.data);
+            document.getElementById("active_agents").innerText = update.active_agents;
+            document.getElementById("system_health").innerText = update.system_health;
+            document.getElementById("success_rate").innerText = update.success_rate;
+            document.getElementById("knowledge_nodes").innerText = update.knowledge_nodes;
+            document.getElementById("live_transcription").innerText = update.live_transcription;
+        };
+        ws.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
+    </script>
+</body>
+</html>
